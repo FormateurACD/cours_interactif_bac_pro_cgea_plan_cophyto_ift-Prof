@@ -3,231 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cours Écophyto - Version Enseignant (Bac Pro CGEA)</title>
+    <title>Cours Écophyto - Espace Professeur (Bac Pro CGEA)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; font-size: 11pt; }
-            .print-break { page-break-before: always; }
-        }
-    </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
-    <!-- Header Enseignant -->
-    <header class="bg-indigo-900 text-white shadow-md no-print">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+    <header class="bg-indigo-900 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <div>
-                <span class="bg-indigo-800 text-indigo-100 text-xs font-semibold px-2.5 py-1 rounded">Espace Professeur — Terminale CGEA</span>
-                <h1 class="text-2xl font-bold mt-1">Module Agro-Écologie : Stratégie Écophyto (Corrigés & Pilotage)</h1>
+                <span class="bg-indigo-800 text-indigo-100 text-xs font-semibold px-2.5 py-1 rounded">Espace Professeur</span>
+                <h1 class="text-2xl font-bold mt-1">Pilote de Cours — Écophyto CGEA</h1>
             </div>
-            <div class="flex items-center gap-3">
-                <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg font-medium transition flex items-center gap-1 shadow">
-                    Imprimer la fiche prof / PDF
-                </button>
-            </div>
+            <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg font-medium transition shadow">Imprimer la fiche prof</button>
         </div>
     </header>
 
-    <!-- Navigation Steps -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm no-print">
-        <div class="max-w-6xl mx-auto px-4 flex overflow-x-auto gap-2 py-3">
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 flex gap-2 py-3 overflow-x-auto">
             <button onclick="switchTab(1)" id="btn-tab-1" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-indigo-700 text-white shadow">1. Accroche</button>
-            <button onclick="switchTab(2)" id="btn-tab-2" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700 hover:bg-slate-300">2. Documents & Analyse</button>
-            <button onclick="switchTab(3)" id="btn-tab-3" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700 hover:bg-slate-300">3. Simulateur IFT</button>
-            <button onclick="switchTab(4)" id="btn-tab-4" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700 hover:bg-slate-300">4. Trace écrite</button>
-            <button onclick="switchTab-5" id="btn-tab-5" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700 hover:bg-slate-300" onclick="switchTab(5)">5. Bilan / Quiz</button>
+            <button onclick="switchTab(2)" id="btn-tab-2" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700">2. Documents</button>
+            <button onclick="switchTab(3)" id="btn-tab-3" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700">3. Simulateur</button>
+            <button onclick="switchTab(4)" id="btn-tab-4" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700">4. Trace écrite</button>
+            <button onclick="switchTab(5)" id="btn-tab-5" class="tab-btn px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-slate-200 text-slate-700">5. Bilan</button>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full space-y-6">
-
-        <!-- ETAPE 1 -->
         <section id="tab-1" class="tab-content space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <h2 class="text-xl font-bold text-indigo-900 mb-2">Étape 1 : Mise en situation professionnelle (5 min)</h2>
-                <p class="text-slate-600 mb-4">Présentation du contexte aux élèves et amorce de la problématique.</p>
-                
+                <h2 class="text-xl font-bold text-indigo-900 mb-2">Étape 1 : Mise en situation (5 min)</h2>
                 <div class="bg-indigo-50 border-l-4 border-indigo-600 p-4 rounded-r-lg mb-6">
-                    <h3 class="font-semibold text-indigo-900">Conseils d'animation (Prof) :</h3>
-                    <p class="text-indigo-800 text-sm mt-1">Faire réagir la classe sur la hausse du coût des intrants et la disparition progressive de certaines matières actives (ex : néonicotinoïdes, interdictions). Introduire la notion de performance globale (économique + environnementale).</p>
+                    <h3 class="font-semibold text-indigo-900">Conseils d'animation :</h3>
+                    <p class="text-indigo-800 text-sm mt-1">Introduire la hausse du coût des intrants et la disparition progressive des matières actives. Mettre en avant la performance globale.</p>
                 </div>
-
-                <!-- Code à donner -->
                 <div class="bg-amber-50 border border-amber-300 p-4 rounded-xl flex items-center justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe pour l'Étape 2</span>
-                        <p class="text-lg font-mono font-bold text-amber-900 mt-1">TERRE</p>
+                        <span class="text-xs font-bold uppercase text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe à donner aux élèves pour l'Étape 2</span>
+                        <p class="text-2xl font-mono font-bold text-amber-900 mt-1">TERRE</p>
                     </div>
-                    <button onclick="switchTab(2)" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2 rounded-lg text-sm font-medium transition">Aller à l'Étape 2 ➔</button>
+                    <button onclick="switchTab(2)" class="bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-medium">Étape suivante ➔</button>
                 </div>
             </div>
         </section>
 
-        <!-- ETAPE 2 -->
         <section id="tab-2" class="tab-content hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <h2 class="text-xl font-bold text-indigo-900 mb-2">Étape 2 : Analyse documentaire & Corrigés (25 min)</h2>
-                <p class="text-slate-600 mb-6">Attendu des réponses pour le questionnaire élève :</p>
-                
-                <div class="space-y-6">
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                        <p class="font-semibold text-slate-800">1. Qu'est-ce que l'IFT et à quoi sert-il ?</p>
-                        <div class="mt-2 p-3 bg-emerald-50 border-l-4 border-emerald-600 text-emerald-900 text-sm rounded-r">
-                            <strong>Corrigé :</strong> L'Indicateur de Fréquence de Traitements comptabilise le nombre de doses de référence utilisées par hectare au cours d'une campagne. Il sert à évaluer les progrès de réduction de pesticides, se situer par rapport au territoire et piloter les politiques publiques[cite: 2].
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                        <p class="font-semibold text-slate-800">2. Objectifs du plan Ecophyto 2+ ?</p>
-                        <div class="mt-2 p-3 bg-emerald-50 border-l-4 border-emerald-600 text-emerald-900 text-sm rounded-r">
-                            <strong>Corrigé :</strong> Deux étapes : -25 % d'ici 2020 par la généralisation de techniques connues, et -50 % d'ici 2025 en repensant globalement les systèmes[cite: 9].
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                        <p class="font-semibold text-slate-800">3. Apport des variétés résistantes ?</p>
-                        <div class="mt-2 p-3 bg-emerald-50 border-l-4 border-emerald-600 text-emerald-900 text-sm rounded-r">
-                            <strong>Corrigé :</strong> Gain de 0,6 à 0,7 d'IFT en supprimant des traitements fongicides de base (ex : septoriose sur blé)[cite: 4, 5].
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                        <p class="font-semibold text-slate-800">4. Deux dispositifs d'accompagnement ?</p>
-                        <div class="mt-2 p-3 bg-emerald-50 border-l-4 border-emerald-600 text-emerald-900 text-sm rounded-r">
-                            <strong>Corrigé :</strong> Le réseau DEPHY (fermes pilotes)[cite: 3, 9], les MAEC (contrats aidés sur 5 ans)[cite: 2], la certification HVE, ou les GIEE[cite: 3].
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                        <p class="font-semibold text-slate-800">5. Réglementation cours d'eau (ZNT et bandes enherbées) ?</p>
-                        <div class="mt-2 p-3 bg-emerald-50 border-l-4 border-emerald-600 text-emerald-900 text-sm rounded-r">
-                            <strong>Corrigé :</strong> Interdiction de fertiliser ou traiter sur une bande de 5 m minimum en bordure des cours d'eau, et respect des Zones de Non-Traitement (ZNT) pour protéger l'eau et les riverains[cite: 7, 8].
-                        </div>
-                    </div>
+                <h2 class="text-xl font-bold text-indigo-900 mb-4">Étape 2 : Corrigé des documents (25 min)</h2>
+                <div class="space-y-4 text-sm">
+                    <div class="p-4 bg-slate-50 border rounded"><strong>Q1 (IFT) :</strong> Nombre de doses de référence par hectare. Sert à mesurer les progrès et se situer par rapport au territoire[cite: 2].</div>
+                    <div class="p-4 bg-slate-50 border rounded"><strong>Q2 (Ecophyto 2+) :</strong> -25 % d'ici 2020 (techniques connues) et -50 % d'ici 2025 (repenser les systèmes)[cite: 9].</div>
+                    <div class="p-4 bg-slate-50 border rounded"><strong>Q3 (Variétés) :</strong> Gain de 0,6 à 0,7 d'IFT en supprimant des traitements fongicides de base[cite: 4, 5].</div>
+                    <div class="p-4 bg-slate-50 border rounded"><strong>Q4 (Dispositifs) :</strong> Réseau DEPHY (fermes pilotes), MAEC (contrats 5 ans), HVE, GIEE[cite: 2, 3, 9].</div>
+                    <div class="p-4 bg-slate-50 border rounded"><strong>Q5 (ZNT) :</strong> Interdiction de traiter sur 5 m minimum en bordure des cours d'eau pour protéger l'eau et les riverains[cite: 7, 8].</div>
                 </div>
-
-                <!-- Code à donner -->
                 <div class="mt-6 bg-amber-50 border border-amber-300 p-4 rounded-xl flex items-center justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe pour l'Étape 3</span>
-                        <p class="text-lg font-mono font-bold text-amber-900 mt-1">DEPHY</p>
+                        <span class="text-xs font-bold uppercase text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe pour l'Étape 3</span>
+                        <p class="text-2xl font-mono font-bold text-amber-900 mt-1">DEPHY</p>
                     </div>
-                    <button onclick="switchTab(3)" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2 rounded-lg text-sm font-medium transition">Aller à l'Étape 3 ➔</button>
+                    <button onclick="switchTab(3)" class="bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-medium">Étape suivante ➔</button>
                 </div>
             </div>
         </section>
 
-        <!-- ETAPE 3 -->
         <section id="tab-3" class="tab-content hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 class="text-xl font-bold text-indigo-900 mb-2">Étape 3 : Simulateur IFT (10 min)</h2>
-                <p class="text-slate-600 mb-4">Points de repère pour l'exercice de simulation sur le blé tendre :</p>
-                
-                <div class="bg-indigo-50 border-l-4 border-indigo-600 p-4 rounded-r-lg mb-6 space-y-2 text-indigo-900 text-sm">
-                    <p>• <strong>IFT de départ standard :</strong> 4,50</p>
-                    <p>• <strong>Combinaison optimale :</strong> Variété résistante (-0,65) + Désherbage mécanique (-0,80) + OAD (-0,50) + Haies/Bocage (-0,35) = IFT abaissé à <strong>2,20</strong> (Objectif -50 % atteint).</p>
-                </div>
-
-                <!-- Code à donner -->
+                <p class="text-slate-600 mb-4">Départ : 4,50. Le combo optimal (variété résistante + désherbage méca + OAD + haies) descend l'IFT à <strong>2,20</strong> (objectif -50% atteint).</p>
                 <div class="bg-amber-50 border border-amber-300 p-4 rounded-xl flex items-center justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe pour l'Étape 4</span>
-                        <p class="text-lg font-mono font-bold text-amber-900 mt-1">BRETAGNE</p>
+                        <span class="text-xs font-bold uppercase text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe pour l'Étape 4</span>
+                        <p class="text-2xl font-mono font-bold text-amber-900 mt-1">BRETAGNE</p>
                     </div>
-                    <button onclick="switchTab(4)" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2 rounded-lg text-sm font-medium transition">Aller à l'Étape 4 ➔</button>
+                    <button onclick="switchTab(4)" class="bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-medium">Étape suivante ➔</button>
                 </div>
             </div>
         </section>
 
-        <!-- ETAPE 4 -->
         <section id="tab-4" class="tab-content hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <h2 class="text-xl font-bold text-indigo-900 mb-2">Étape 4 : Trace écrite de référence (10 min)</h2>
-                <p class="text-slate-600 mb-4">Tableau de synthèse attendu dans la copie des élèves :</p>
-
-                <div class="overflow-x-auto mb-6">
-                    <table class="w-full text-left border-collapse border border-slate-300 text-sm">
-                        <thead>
-                            <tr class="bg-indigo-900 text-white">
-                                <th class="p-3 border border-slate-300">Axes majeurs</th>
-                                <th class="p-3 border border-slate-300">Définition / Mécanisme clé</th>
-                                <th class="p-3 border border-slate-300">Exemple concret sur le terrain</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="p-3 border border-slate-300 font-semibold bg-slate-50">1. Indicateur (IFT)</td>
-                                <td class="p-3 border border-slate-300">Nombre de doses de référence par hectare[cite: 2].</td>
-                                <td class="p-3 border border-slate-300">Suivi des pratiques de l'exploitation[cite: 2].</td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border border-slate-300 font-semibold bg-slate-50">2. Levier génétique</td>
-                                <td class="p-3 border border-slate-300">Utilisation de variétés résistantes aux maladies[cite: 4, 5].</td>
-                                <td class="p-3 border border-slate-300">Suppression d'un traitement fongicide sur blé[cite: 5].</td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border border-slate-300 font-semibold bg-slate-50">3. Dispositifs & Aides</td>
-                                <td class="p-3 border border-slate-300">Réseaux d'expérimentation et contrats agro-environnementaux[cite: 2, 3].</td>
-                                <td class="p-3 border border-slate-300">Fermes DEPHY, MAEC[cite: 2, 3].</td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border border-slate-300 font-semibold bg-slate-50">4. Réglementation</td>
-                                <td class="p-3 border border-slate-300">Mesures de protection de l'eau et des riverains[cite: 7, 8].</td>
-                                <td class="p-3 border border-slate-300">Zones de Non-Traitement (ZNT) et bandes enherbées[cite: 7, 8].</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Code à donner -->
+                <h2 class="text-xl font-bold text-indigo-900 mb-4">Étape 4 : Trace écrite de référence</h2>
+                <table class="w-full text-left border-collapse border border-slate-300 text-sm mb-6">
+                    <tr class="bg-indigo-900 text-white"><th class="p-2 border">Axe</th><th class="p-2 border">Définition</th><th class="p-2 border">Exemple terrain</th></tr>
+                    <tr><td class="p-2 border font-semibold">IFT</td><td class="p-2 border">Nombre de doses de référence[cite: 2].</td><td class="p-2 border">Suivi des pratiques[cite: 2].</td></tr>
+                    <tr><td class="p-2 border font-semibold">Génétique</td><td class="p-2 border">Variétés résistantes[cite: 4, 5].</td><td class="p-2 border">Suppression fongicide[cite: 5].</td></tr>
+                    <tr><td class="p-2 border font-semibold">Dispositifs</td><td class="p-2 border">Réseaux et contrats[cite: 2, 3].</td><td class="p-2 border">Fermes DEPHY, MAEC[cite: 2, 3].</td></tr>
+                    <tr><td class="p-2 border font-semibold">Règlement</td><td class="p-2 border">Protection eau/riverains[cite: 7, 8].</td><td class="p-2 border">ZNT et bandes enherbées[cite: 7, 8].</td></tr>
+                </table>
                 <div class="bg-amber-50 border border-amber-300 p-4 rounded-xl flex items-center justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe pour l'Étape 5</span>
-                        <p class="text-lg font-mono font-bold text-amber-900 mt-1">BILAN</p>
+                        <span class="text-xs font-bold uppercase text-amber-800 bg-amber-200 px-2 py-0.5 rounded">Mot de passe pour l'Étape 5</span>
+                        <p class="text-2xl font-mono font-bold text-amber-900 mt-1">BILAN</p>
                     </div>
-                    <button onclick="switchTab(5)" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2 rounded-lg text-sm font-medium transition">Aller à l'Étape 5 ➔</button>
+                    <button onclick="switchTab(5)" class="bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-medium">Étape suivante ➔</button>
                 </div>
             </div>
         </section>
 
-        <!-- ETAPE 5 -->
         <section id="tab-5" class="tab-content hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <h2 class="text-xl font-bold text-indigo-900 mb-2">Étape 5 : Corrigé du Bilan / Quiz (5 min)</h2>
-                <p class="text-slate-600 mb-4">Réponses attendues pour les 5 questions du quiz formatif :</p>
-
+                <h2 class="text-xl font-bold text-indigo-900 mb-4">Étape 5 : Corrigé du Bilan</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                        <p class="font-semibold text-slate-900">Q1 : Que mesure l'IFT ?</p>
-                        <p class="text-emerald-700 font-semibold mt-1">➔ Réponse B : Le nombre de doses de référence[cite: 2].</p>
-                    </div>
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                        <p class="font-semibold text-slate-900">Q2 : Objectif du plan Ecophyto 2+ ?</p>
-                        <p class="text-emerald-700 font-semibold mt-1">➔ Réponse B : Réduire de 50 % d'ici 2025[cite: 9].</p>
-                    </div>
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                        <p class="font-semibold text-slate-900">Q3 : Réseau national d'accompagnement ?</p>
-                        <p class="text-emerald-700 font-semibold mt-1">➔ Réponse A : Le réseau DEPHY[cite: 3, 9].</p>
-                    </div>
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                        <p class="font-semibold text-slate-900">Q4 : Qu'est-ce qu'une ZNT ?</p>
-                        <p class="text-emerald-700 font-semibold mt-1">➔ Réponse B : Distance sans traitement près des cours d'eau[cite: 8].</p>
-                    </div>
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg md:col-span-2">
-                        <p class="font-semibold text-slate-900">Q5 : Intérêt agronomique des variétés résistantes ?</p>
-                        <p class="text-emerald-700 font-semibold mt-1">➔ Réponse A : Réduire les fongicides et baisser l'IFT de 0,6 à 0,7[cite: 4, 5].</p>
-                    </div>
+                    <div class="p-3 bg-slate-50 border rounded"><strong>Q1 :</strong> Réponse B (Doses de référence)[cite: 2].</div>
+                    <div class="p-3 bg-slate-50 border rounded"><strong>Q2 :</strong> Réponse B (-50% d'ici 2025)[cite: 9].</div>
+                    <div class="p-3 bg-slate-50 border rounded"><strong>Q3 :</strong> Réponse A (Réseau DEPHY)[cite: 3, 9].</div>
+                    <div class="p-3 bg-slate-50 border rounded"><strong>Q4 :</strong> Réponse B (Distance sans traitement cours d'eau)[cite: 8].</div>
+                    <div class="p-3 bg-slate-50 border rounded md:col-span-2"><strong>Q5 :</strong> Réponse A (Réduire fongicides, gain IFT 0,6-0,7)[cite: 4, 5].</div>
                 </div>
             </div>
         </section>
-
     </main>
-
-    <footer class="bg-white border-t border-slate-200 text-center py-4 text-sm text-slate-500 mt-auto no-print">
-        Lycée Pommerit — Espace Professeur — Terminale Bac Pro CGEA
-    </footer>
 
     <script>
         function switchTab(tabNum) {
@@ -238,10 +122,7 @@
             });
             document.getElementById(`tab-${tabNum}`).classList.remove('hidden');
             const btn = document.getElementById(`btn-tab-${tabNum}`);
-            if (btn) {
-                btn.classList.remove('bg-slate-200', 'text-slate-700');
-                btn.classList.add('bg-indigo-700', 'text-white', 'shadow');
-            }
+            if(btn) { btn.classList.remove('bg-slate-200', 'text-slate-700'); btn.classList.add('bg-indigo-700', 'text-white', 'shadow'); }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
