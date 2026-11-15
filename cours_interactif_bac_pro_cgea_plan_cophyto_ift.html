@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MP4 Agro-écologie | Plan Écophyto & Pression Phytosanitaire (Bac Pro CGEA)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js pour les graphiques d'évolution IFT -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts : Plus Jakarta Sans & Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    /* Styles spécifiques pour l'impression de la trace écrite */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-synthese, #printable-synthese * {
+        visibility: visible;
+      }
+      #printable-synthese {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        padding: 20px !important;
+        box-shadow: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- EN-TÊTE & BARRE DE CONTRÔLE ENSEIGNANT (50 MIN) -->
+  <header class="bg-emerald-950 text-white shadow-lg sticky top-0 z-50 border-b border-emerald-800">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <!-- Titre & Niveau -->
+      <div class="flex items-center gap-3">
+        <div class="bg-emerald-600 p-2.5 rounded-xl shadow-inner">
+          <i data-lucide="sprout" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider bg-emerald-800 text-emerald-200 px-2.5 py-0.5 rounded-full">Terminale Bac Pro CGEA</span>
+            <span class="text-xs font-semibold text-amber-300">MP4 • Agro-écologie</span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-display font-bold tracking-tight text-white">
+            Plan Écophyto & Réduction de la Pression Phytosanitaire
+          </h1>
+        </div>
+      </div>
+
+      <!-- Contrôles : Chronomètre 50 min + Bascule Mode Enseignant -->
+      <div class="flex flex-wrap items-center gap-3 sm:gap-5">
+        <!-- Minuteur de séance -->
+        <div class="flex items-center gap-2 bg-emerald-900/90 border border-emerald-700 px-3 py-1.5 rounded-xl">
+          <i data-lucide="timer" class="w-4 h-4 text-amber-400"></i>
+          <div class="flex flex-col">
+            <span class="text-[10px] uppercase tracking-wider text-emerald-300 leading-none">Séance 50 min</span>
+            <span id="timer-display" class="font-mono font-bold text-base text-white leading-tight">50:00</span>
+          </div>
+          <div class="flex items-center gap-1 ml-1">
+            <button onclick="toggleTimer()" id="timer-btn" title="Démarrer / Pause" class="p-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition">
+              <i data-lucide="play" id="timer-icon" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="resetTimer()" title="Réinitialiser à 50:00" class="p-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-emerald-200 transition">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bascule Mode Élève / Mode Enseignant -->
+        <div class="flex items-center gap-2 bg-slate-900/80 border border-slate-700 p-1 rounded-xl">
+          <button onclick="setTeacherMode(false)" id="btn-mode-eleve" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            Élève
+          </button>
+          <button onclick="setTeacherMode(true)" id="btn-mode-prof" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white">
+            <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
+            Enseignant (Corrigés)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BARRE DE NAVIGATION DES ÉTAPES DU COURS -->
+    <nav class="bg-emerald-900/60 border-t border-emerald-800/80 overflow-x-auto">
+      <div class="max-w-7xl mx-auto px-4 flex items-center gap-1 sm:gap-2 py-2 min-w-max">
+        <button onclick="switchTab('tab-accroche')" id="nav-tab-accroche" class="nav-btn active flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition bg-white text-emerald-950 shadow-sm">
+          <span class="w-5 h-5 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">1</span>
+          <span>Accroche Pro</span>
+          <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-medium">5 min</span>
+        </button>
+
+        <button onclick="switchTab('tab-docs')" id="nav-tab-docs" class="nav-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition text-emerald-100 hover:bg-emerald-800/70">
+          <span class="w-5 h-5 rounded-full bg-emerald-700 text-emerald-100 text-xs flex items-center justify-center font-bold">2</span>
+          <span>Dossiers & Activités</span>
+          <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-800 text-emerald-200 font-medium">25 min</span>
+        </button>
+
+        <button onclick="switchTab('tab-simulateur')" id="nav-tab-simulateur" class="nav-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition text-emerald-100 hover:bg-emerald-800/70">
+          <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs flex items-center justify-center font-bold">★</span>
+          <span>Simulateur IFT</span>
+          <span class="text-xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 font-medium">Outil</span>
+        </button>
+
+        <button onclick="switchTab('tab-synthese')" id="nav-tab-synthese" class="nav-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition text-emerald-100 hover:bg-emerald-800/70">
+          <span class="w-5 h-5 rounded-full bg-emerald-700 text-emerald-100 text-xs flex items-center justify-center font-bold">3</span>
+          <span>Synthèse & Trace Écrite</span>
+          <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-800 text-emerald-200 font-medium">15 min</span>
+        </button>
+
+        <button onclick="switchTab('tab-quiz')" id="nav-tab-quiz" class="nav-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition text-emerald-100 hover:bg-emerald-800/70">
+          <span class="w-5 h-5 rounded-full bg-emerald-700 text-emerald-100 text-xs flex items-center justify-center font-bold">4</span>
+          <span>Bilan & Quiz Flash</span>
+          <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-800 text-emerald-200 font-medium">5 min</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 1 : ACCROCHE & MISE EN SITUATION PROFESSIONNELLE (5 MIN)       -->
+    <!-- ===================================================================== -->
+    <section id="tab-accroche" class="tab-content space-y-6">
+      <!-- Note pédagogique Enseignant -->
+      <div class="teacher-only hidden bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm">
+        <div class="flex items-start gap-3">
+          <i data-lucide="lightbulb" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+          <div>
+            <h4 class="font-bold text-amber-900 text-sm">Note pédagogique Enseignant (5 min max) :</h4>
+            <p class="text-sm text-amber-800 mt-1">
+              Projeter cette mise en situation dès l'entrée en classe. Faire réagir les élèves à l'oral sur les contraintes réglementaires qu'ils connaissent déjà (bandes enherbées, Certiphyto) et sur l'enjeu économique : <strong>comment réduire les produits phytosanitaires sans sacrifier le rendement ni la marge brute ?</strong> Annoncer ensuite la problématique de la séance.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mot de passe à donner aux élèves (visible en mode Enseignant uniquement) -->
+      <div class="teacher-only hidden no-print bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm">
+        <div class="flex items-start gap-3">
+          <i data-lucide="key-round" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+          <div>
+            <h4 class="font-bold text-amber-900 text-sm">Mot de passe pour débloquer l'étape 2 (Dossiers &amp; Activités) côté élèves :</h4>
+            <p class="text-sm text-amber-800 mt-1">
+              <span class="font-mono font-bold text-base bg-white border border-amber-300 px-2.5 py-0.5 rounded-lg tracking-wider">HAIE</span>
+              — à donner à l'oral quand la mise en situation est terminée (majuscules et accents indifférents).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carte Mise en Situation -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-gradient-to-r from-emerald-800 to-teal-800 px-6 py-5 text-white flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-200">Étape 1 • Mise en situation professionnelle (5 min)</span>
+            <h2 class="text-2xl font-display font-bold mt-1">Installation en polyculture-élevage en Bretagne</h2>
+          </div>
+          <div class="bg-white/15 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20 text-sm">
+            <span class="font-semibold">Contexte :</span> EARL du Bocage • 115 ha SAU (Blé, Colza, Maïs, Prairies)
+          </div>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-4">
+            <div class="prose max-w-none text-slate-700 leading-relaxed">
+              <p class="text-base">
+                Vous accompagnez <strong>Loïc, 24 ans</strong>, titulaire d'un Bac Pro CGEA, qui prépare son installation sur une exploitation de polyculture-élevage dans les Côtes-d'Armor. Lors de la visite du parcellaire avec son conseiller de Chambre d'agriculture, trois constats majeurs émergent :
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+                <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl">
+                  <div class="flex items-center gap-2 text-blue-800 font-bold text-sm mb-1">
+                    <i data-lucide="waves" class="w-4 h-4"></i>
+                    Enjeu Eau & Territoire
+                  </div>
+                  <p class="text-xs text-blue-900">Plusieurs parcelles de blé et de maïs bordent un cours d'eau classé BCAE et des habitations riveraines.</p>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl">
+                  <div class="flex items-center gap-2 text-amber-800 font-bold text-sm mb-1">
+                    <i data-lucide="flask-conical-off" class="w-4 h-4"></i>
+                    Impasse Technique
+                  </div>
+                  <p class="text-xs text-amber-900">De nombreuses substances actives sont retirées du marché et les résistances (septoriose, altises) augmentent.</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl">
+                  <div class="flex items-center gap-2 text-emerald-800 font-bold text-sm mb-1">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    Objectif Économique
+                  </div>
+                  <p class="text-xs text-emerald-900">L'exploitation présente actuellement un <strong>IFT élevé</strong> par rapport au groupe local, pesant sur les charges opérationnelles.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Problématique centrale -->
+            <div class="bg-slate-900 text-white p-5 rounded-xl border-l-4 border-amber-400">
+              <span class="text-xs uppercase tracking-wider font-bold text-amber-400">Problématique de la séance</span>
+              <p class="text-lg font-display font-semibold mt-1">
+                Comment le Plan Écophyto et les leviers agro-écologiques permettent-ils à un exploitant agricole de réduire sa pression phytosanitaire tout en maintenant la performance économique de son système ?
+              </p>
+            </div>
+          </div>
+
+          <!-- Questions d'ouverture orale -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <h3 class="font-display font-bold text-slate-800 flex items-center gap-2 mb-3">
+                <i data-lucide="message-square" class="w-5 h-5 text-emerald-600"></i>
+                Questions flash d'ouverture
+              </h3>
+              <ul class="space-y-3 text-sm text-slate-700">
+                <li class="flex items-start gap-2.5 bg-white p-3 rounded-lg border border-slate-200">
+                  <span class="font-bold text-emerald-700">1.</span>
+                  <span>Que signifie le sigle <strong>IFT</strong> et que mesure-t-il concrètement sur une parcelle ?</span>
+                </li>
+                <li class="flex items-start gap-2.5 bg-white p-3 rounded-lg border border-slate-200">
+                  <span class="font-bold text-emerald-700">2.</span>
+                  <span>Quelles obligations réglementaires s'imposent à Loïc près des cours d'eau et pour son pulvérisateur ?</span>
+                </li>
+                <li class="flex items-start gap-2.5 bg-white p-3 rounded-lg border border-slate-200">
+                  <span class="font-bold text-emerald-700">3.</span>
+                  <span>Comment peut-il réduire ses traitements fongicides sur blé sans perdre de rendement ?</span>
+                </li>
+              </ul>
+            </div>
+
+            <button onclick="switchTab('tab-docs')" class="mt-5 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+              <span>Passer à l'étude des dossiers</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 2 : CORPUS DOCUMENTAIRE & ACTIVITÉS ÉLÈVES (25 MIN)            -->
+    <!-- ===================================================================== -->
+    <section id="tab-docs" class="tab-content hidden space-y-6">
+      <!-- Mot de passe à donner aux élèves (visible en mode Enseignant uniquement) -->
+      <div class="teacher-only hidden no-print bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm">
+        <div class="flex items-start gap-3">
+          <i data-lucide="key-round" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+          <div>
+            <h4 class="font-bold text-amber-900 text-sm">Mot de passe pour débloquer l'étape 3 (Ma Trace Écrite) côté élèves :</h4>
+            <p class="text-sm text-amber-800 mt-1">
+              <span class="font-mono font-bold text-base bg-white border border-amber-300 px-2.5 py-0.5 rounded-lg tracking-wider">TREFLE</span>
+              — à donner quand les élèves ont terminé l'analyse des dossiers et le simulateur d'IFT (majuscules et accents indifférents).
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Étape 2 • Exploitation documentaire (25 min)</span>
+          <h2 class="text-xl font-display font-bold text-slate-900">Corpus de ressources & Missions d'analyse</h2>
+        </div>
+        <p class="text-sm text-slate-600 max-w-xl">
+          Consultez les 3 dossiers de référence à gauche (incluant les données de l'Observatoire de l'Environnement en Bretagne) pour compléter les 3 missions professionnelles à droite.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- COLONNE GAUCHE : LES 3 DOSSIERS SOURCES + GRAPHIQUE OEB (7 colonnes) -->
+        <div class="lg:col-span-7 space-y-4">
+          <!-- Sélecteur de Document -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="flex border-b border-slate-200 bg-slate-50 overflow-x-auto">
+              <button onclick="selectDoc(1)" id="doc-tab-1" class="doc-selector flex-1 py-3 px-4 text-xs sm:text-sm font-bold border-b-2 border-emerald-600 text-emerald-800 bg-white transition whitespace-nowrap">
+                Doc 1 : Fiche Plan Écophyto
+              </button>
+              <button onclick="selectDoc(2)" id="doc-tab-2" class="doc-selector flex-1 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition whitespace-nowrap">
+                Doc 2 : Variétés Résistantes
+              </button>
+              <button onclick="selectDoc(3)" id="doc-tab-3" class="doc-selector flex-1 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 transition whitespace-nowrap">
+                Doc 3 : Dossier Bretagne (OEB)
+              </button>
+            </div>
+
+            <!-- CONTENU DOCUMENT 1 : FICHE ÉCOPHYTO (LYCÉE POMMERIT) -->
+            <div id="doc-content-1" class="doc-panel p-5 space-y-4 text-sm text-slate-700 leading-relaxed max-h-[640px] overflow-y-auto">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span class="font-bold text-emerald-900 text-base">Fiche 2 : Le Plan Écophyto & l'IFT</span>
+                <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">Source : Cours MP4 Agro-écologie (Lycée Pommerit)</span>
+              </div>
+
+              <div class="bg-emerald-50/70 border border-emerald-200 p-4 rounded-xl">
+                <h4 class="font-bold text-emerald-950 mb-1">1. Qu'est-ce que le Plan Écophyto ?</h4>
+                <p>
+                  Lancé en <strong>2008</strong> à la suite du Grenelle de l'Environnement et piloté par le ministère de l'Agriculture, ce plan vise à <strong>réduire progressivement l'utilisation des produits phytosanitaires</strong> (pesticides) en France tout en maintenant une agriculture économiquement performante : <em>« produire plus et mieux en réduisant la dépendance aux produits de protection des plantes »</em>.
+                </p>
+                <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div class="bg-white p-2.5 rounded-lg border border-emerald-100">
+                    <strong>Outils clés :</strong> Formation <strong>Certiphyto</strong> (certificat individuel obligatoire), réseaux de fermes pilotes, <strong>BSV</strong> (Bulletins de Santé du Végétal) et contrôle obligatoire des pulvérisateurs.
+                  </div>
+                  <div class="bg-white p-2.5 rounded-lg border border-emerald-100">
+                    <strong>Acteurs mobilisés :</strong> État (plus de 300 agents de contrôle), agriculteurs (métropole et DOM), instituts techniques, collectivités et jardiniers amateurs.
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-slate-900 mb-1">2. L'Indicateur de Fréquence de Traitements phytosanitaires (IFT)</h4>
+                <p>
+                  L'<strong>IFT</strong> est un indicateur de suivi de l'utilisation des pesticides à l'échelle d'une parcelle, d'une exploitation ou d'un territoire. Il <strong>comptabilise le nombre de doses de référence utilisées par hectare au cours d'une campagne culturale</strong>.
+                </p>
+                <p class="mt-1.5">
+                  Il se décline par grandes catégories : <strong>herbicides</strong>, <strong>fongicides</strong>, <strong>insecticides/acaricides</strong> et autres produits. Pour l'agriculteur, il permet d'évaluer ses progrès et de situer ses pratiques par rapport aux références de son territoire dans une optique de <strong>triple performance (économique, environnementale et sociale)</strong>.
+                </p>
+              </div>
+
+              <div>
+                <h4 class="font-bold text-slate-900 mb-2">3. Les 5 dispositifs d'action publique mobilisant l'IFT</h4>
+                <div class="space-y-2 text-xs">
+                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <span class="font-bold text-emerald-800">• Les MAEC (Mesures Agro-Environnementales et Climatiques) :</span> Engagement contractuel sur 5 ans à respecter un plafond maximal d'IFT en contrepartie d'une aide financière à l'hectare.
+                  </div>
+                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <span class="font-bold text-emerald-800">• Le réseau DEPHY et les Groupes 30 000 :</span> Fermes pilotes accompagnées par un ingénieur réseau pour éprouver et diffuser les systèmes économes en intrants.
+                  </div>
+                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <span class="font-bold text-emerald-800">• La certification HVE (Haute Valeur Environnementale - Niveau 3) :</span> Démarche volontaire portant sur la biodiversité, la stratégie phytosanitaire (via l'IFT), la fertilisation et l'eau, permettant de valoriser les produits.
+                  </div>
+                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <span class="font-bold text-emerald-800">• Les GIEE (Groupements d'Intérêt Économique et Environnemental) & le Diagnostic agro-écologique :</span> Reconnaissance officielle par l'État des collectifs d'agriculteurs engagés (accès prioritaire ou majoration des aides publiques).
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTENU DOCUMENT 2 : ARTICLE TERRE-NET VARIÉTÉS RÉSISTANTES -->
+            <div id="doc-content-2" class="doc-panel hidden p-5 space-y-4 text-sm text-slate-700 leading-relaxed max-h-[640px] overflow-y-auto">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span class="font-bold text-emerald-900 text-base">Protection des cultures : Les variétés résistent aux bio-agresseurs</span>
+                <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">Source : Terre-net Média (Tanguy Dhelin)</span>
+              </div>
+
+              <p>
+                Face au retrait des solutions chimiques et à la pression sociétale, le <strong>levier génétique</strong> devient indispensable en céréales et en colza. Lors de leur inscription au catalogue officiel, les variétés de céréales à paille sont désormais cotées pour moitié sur leur <strong>performance sans traitement phytosanitaire (modalité non traitée)</strong>, avec des bonus pour leurs résistances aux maladies.
+              </p>
+
+              <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-center gap-4">
+                <div class="bg-amber-500 text-white font-display font-extrabold text-lg px-3 py-2 rounded-lg shrink-0">
+                  -0,6 à -0,7 IFT
+                </div>
+                <p class="text-xs text-amber-950">
+                  <strong>Gain moyen constaté :</strong> Selon Josiane Lorgeou (Arvalis-Institut du végétal), l'écart d'économie entre une variété résistante et une variété sensible atteint <strong>0,6 à 0,7 point d'IFT</strong>. Toutefois, selon Caterine Deschamps (Axéréal), <em>« la génétique ne peut à elle seule tout résoudre : elle doit être intégrée dans les outils de modélisation (OAD) et le conseil »</em>.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                  <div class="flex items-center gap-2 font-bold text-slate-900 mb-1.5">
+                    <i data-lucide="user-check" class="w-4 h-4 text-emerald-600"></i>
+                    Témoignage 1 : David Gonin (Indre - 500 ha)
+                  </div>
+                  <p class="text-xs text-slate-700 italic">
+                    « Sur mes 80 ha de colza, je privilégie désormais la <strong>rusticité</strong> plutôt que la seule productivité brute. Face au retrait des insecticides, je choisis des variétés vigoureuses qui résistent mieux aux maladies ainsi qu'au <strong>charançon du bourgeon terminal et aux altises</strong>. »
+                  </p>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                  <div class="flex items-center gap-2 font-bold text-slate-900 mb-1.5">
+                    <i data-lucide="user-check" class="w-4 h-4 text-emerald-600"></i>
+                    Témoignage 2 : Samuel Honoré (Pas-de-Calais - 100 ha)
+                  </div>
+                  <p class="text-xs text-slate-700 italic">
+                    « J'ai mis en place une <strong>parcelle d'observation</strong> implantée avec 8 variétés côte à côte. Avec mon conseiller, cela me permet de comparer leur résistance en conditions réelles (septoriose, rouilles) et de <strong>supprimer souvent mon 1er traitement fongicide, parfois le 3e, et presque tous les régulateurs</strong>. »
+                  </p>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-600 bg-slate-100 p-3 rounded-lg">
+                <strong>Adaptation au terroir :</strong> Le choix variétal dépend du climat régional : résistance à la <strong>fusariose</strong> en blé dur dans le Sud, résistance à la <strong>septoriose</strong> et aux <strong>rouilles</strong> (jaune, voire noire avec le réchauffement climatique) dans le Nord et l'Ouest.
+              </p>
+            </div>
+
+            <!-- CONTENU DOCUMENT 3 : DOSSIER BRETAGNE (OEB) + GRAPHIQUES -->
+            <div id="doc-content-3" class="doc-panel hidden p-5 space-y-4 text-sm text-slate-700 leading-relaxed max-h-[640px] overflow-y-auto">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span class="font-bold text-emerald-900 text-base">Quelles réponses en Bretagne pour diminuer la pression phytosanitaire ?</span>
+                <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">Source : Observatoire de l'Environnement en Bretagne (OEB)</span>
+              </div>
+
+              <!-- Bloc Réglementation -->
+              <div class="bg-blue-50/70 border border-blue-200 p-4 rounded-xl space-y-2">
+                <h4 class="font-bold text-blue-950 flex items-center gap-2">
+                  <i data-lucide="scale" class="w-4 h-4 text-blue-700"></i>
+                  1. Un cadre réglementaire strict pour protéger l'eau et les riverains
+                </h4>
+                <ul class="text-xs text-blue-950 space-y-1.5 list-disc pl-4">
+                  <li><strong>Règlement européen 1107/2009 & DCE :</strong> Ré-homologation stricte des substances actives et atteinte du bon état écologique et chimique des eaux.</li>
+                  <li><strong>Protection des cours d'eau et fossés :</strong> Interdiction de désherber les fossés en Bretagne (arrêtés « fossés »). Obligation d'une <strong>bande enherbée ou boisée de 5 m minimum</strong> le long des cours d'eau BCAE (Directive Nitrates), d'une <strong>Zone de Non-Traitement (ZNT)</strong> d'au moins 5 m et de <strong>Dispositifs Végétalisés Permanents (DVP)</strong> contre le ruissellement.</li>
+                  <li><strong>Riverains & Matériel :</strong> Zones de protection des riverains (adaptables via des <strong>chartes départementales</strong> imposant des <strong>buses anti-dérive</strong>) et <strong>contrôle périodique obligatoire des pulvérisateurs</strong> (tous les 3 à 5 ans).</li>
+                </ul>
+              </div>
+
+              <!-- Bloc Évolution Écophyto & Graphique interactif -->
+              <div class="space-y-2">
+                <h4 class="font-bold text-slate-900">2. De Écophyto 1 à Écophyto 2+ : Résultats des réseaux bretons</h4>
+                <p class="text-xs">
+                  L'objectif initial de réduction de 50 % a été rééchelonné par <strong>Écophyto 2+</strong> : <strong>-25 % d'ici 2020</strong> (généralisation des techniques connues) puis <strong>-50 % d'ici 2025</strong> (reconception globale des systèmes). En Bretagne en 2020, on dénombre <strong>13 réseaux DEPHY ferme</strong> (165 exploitations), 9 projets DEPHY EXPE et <strong>50 Groupes 30 000</strong> (plus de 680 exploitations).
+                </p>
+
+                <!-- Graphique Chart.js reproduisant les données OEB -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                  <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <span class="text-xs font-bold text-slate-800">Évolution des IFT en Grande Culture Polyculture-Élevage (GCPE) en Bretagne</span>
+                    <span class="text-[11px] text-slate-500">Données : Chambre Régionale d'Agriculture / OEB</span>
+                  </div>
+                  <div class="h-56 w-full">
+                    <canvas id="oebChart"></canvas>
+                  </div>
+                  <p class="text-[11px] text-slate-600 mt-2 italic">
+                    Lecture : Dans les groupes DEPHY GCPE Bretagne, l'IFT <strong>Hors herbicide</strong> (fongicides, insecticides) a été divisé par deux (passant d'environ <strong>0,92</strong> en 2009-2011 à <strong>0,45</strong> en 2017), tandis que la baisse sur les herbicides est plus lente.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Bloc Actions territoriales & Accélération -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                  <h5 class="font-bold text-emerald-950 mb-1">Actions territoriales & Bocage</h5>
+                  <p class="text-emerald-900">
+                    Déploiement des <strong>SAGE</strong>, diagnostics parcellaires <strong>DPR2</strong> (risques de transfert), plantation de <strong>7 000 km de haies</strong> via le programme <em>Breizh Bocage</em> (effet brise-vent anti-dérive et anti-érosion) et aides <strong>MAEC / CAB / MAB</strong> (185 M€ engagés sur 2015-2018).
+                  </p>
+                </div>
+                <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl">
+                  <h5 class="font-bold text-purple-950 mb-1">Accélérer la transition (Loi EGAlim)</h5>
+                  <p class="text-purple-900">
+                    <strong>Séparation de la vente et du conseil</strong> phytosanitaire ; création du <strong>Conseil Stratégique</strong> obligatoire (tous les 3 ans) et du conseil spécifique ; mise en place des <strong>CEPP</strong> (Certificats d'Économie de Produits Phytosanitaires) pour les distributeurs ; développement de la prophylaxie, du désherbage mécanique, des drones et de la biodiversité fonctionnelle.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLONNE DROITE : ACTIVITÉS & MISSIONS ÉLÈVES (5 colonnes) -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <div class="bg-emerald-100 text-emerald-700 p-2 rounded-lg">
+                  <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-display font-bold text-slate-900 text-base">Travail dirigé : 3 Missions</h3>
+                  <p class="text-xs text-slate-500">Complétez vos réponses à l'aide des documents</p>
+                </div>
+              </div>
+              <button onclick="toggleAllCorrections()" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 underline">
+                Afficher/Masquer corrigés
+              </button>
+            </div>
+
+            <!-- MISSION A -->
+            <div class="space-y-2.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Mission A • Cadre & Réglementation</span>
+                <span class="text-xs text-slate-400">Docs 1 & 3</span>
+              </div>
+              <p class="text-xs font-semibold text-slate-800">
+                1. Quelles sont les obligations réglementaires de Loïc s'il traite une parcelle bordant un cours d'eau ?
+              </p>
+              <textarea rows="2" placeholder="Saisissez votre réponse ici..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"></textarea>
+
+              <p class="text-xs font-semibold text-slate-800">
+                2. Expliquez la différence entre le <em>conseil stratégique</em> et le <em>conseil spécifique</em> depuis la séparation vente/conseil.
+              </p>
+              <textarea rows="2" placeholder="Saisissez votre réponse ici..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"></textarea>
+
+              <!-- Corrigé Mission A -->
+              <div class="correction-box teacher-only hidden bg-emerald-900 text-emerald-50 p-3 rounded-lg text-xs space-y-1.5 mt-2">
+                <div class="font-bold text-amber-300 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Corrigé Mission A :
+                </div>
+                <p><strong>1. Cours d'eau :</strong> Maintien d'une bande enherbée/boisée de 5 m min (BCAE), respect d'une ZNT d'au moins 5 m (selon l'AMM du produit) et des DVP, interdiction stricte de désherber les fossés.</p>
+                <p><strong>2. Conseil :</strong> Le <em>conseil stratégique</em> est un diagnostic global de l'exploitation réalisé tous les 3 ans maximum pour réduire l'usage des phytos. Le <em>conseil spécifique</em> est une préconisation ponctuelle écrite d'un produit en cours de campagne face à un bio-agresseur.</p>
+              </div>
+            </div>
+
+            <!-- MISSION B -->
+            <div class="space-y-2.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Mission B • Agronomie & Génétique</span>
+                <span class="text-xs text-slate-400">Docs 2 & 3</span>
+              </div>
+              <p class="text-xs font-semibold text-slate-800">
+                1. Quel gain d'IFT permet le choix d'une variété résistante ? Pourquoi la génétique seule ne suffit-elle pas ?
+              </p>
+              <textarea rows="2" placeholder="Saisissez votre réponse ici..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"></textarea>
+
+              <p class="text-xs font-semibold text-slate-800">
+                2. Analysez le graphique OEB (Doc 3) : sur quelle catégorie de produits les groupes DEPHY bretons ont-ils le plus progressé ?
+              </p>
+              <textarea rows="2" placeholder="Saisissez votre réponse ici..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"></textarea>
+
+              <!-- Corrigé Mission B -->
+              <div class="correction-box teacher-only hidden bg-emerald-900 text-emerald-50 p-3 rounded-lg text-xs space-y-1.5 mt-2">
+                <div class="font-bold text-amber-300 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Corrigé Mission B :
+                </div>
+                <p><strong>1. Génétique :</strong> Gain de <strong>0,6 à 0,7 point d'IFT</strong>. Elle ne suffit pas seule : elle doit être couplée à l'observation au champ (parcelle témoin de S. Honoré), aux OAD (outils de modélisation) et aux pratiques prophylactiques (rotations, faux-semis).</p>
+                <p><strong>2. Graphique OEB :</strong> Les progrès les plus spectaculaires concernent les produits <strong>« Hors herbicides »</strong> (fongicides et insecticides), dont l'IFT a été divisé par 2 (de ~0,92 à 0,45) grâce aux variétés résistantes et aux OAD.</p>
+              </div>
+            </div>
+
+            <!-- MISSION C -->
+            <div class="space-y-2.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Mission C • Collectif & Financement</span>
+                <span class="text-xs text-slate-400">Docs 1 & 3</span>
+              </div>
+              <p class="text-xs font-semibold text-slate-800">
+                Citez et expliquez 3 dispositifs permettant à Loïc d'être accompagné techniquement ou financièrement dans sa transition.
+              </p>
+              <textarea rows="2" placeholder="Ex : MAEC, DEPHY, HVE, GIEE, CAB/MAB..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white"></textarea>
+
+              <!-- Corrigé Mission C -->
+              <div class="correction-box teacher-only hidden bg-emerald-900 text-emerald-50 p-3 rounded-lg text-xs space-y-1.5 mt-2">
+                <div class="font-bold text-amber-300 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Corrigé Mission C :
+                </div>
+                <p><strong>• Réseau DEPHY / Groupes 30 000 :</strong> Accompagnement collectif par un ingénieur et échanges entre pairs.</p>
+                <p><strong>• MAEC (ou CAB/MAB en Bio) :</strong> Aide financière à l'hectare sur 5 ans en échange du respect d'un plafond d'IFT.</p>
+                <p><strong>• Certification HVE (niveau 3) ou GIEE :</strong> Reconnaissance officielle valorisant les produits sur le marché ou majorant les aides publiques.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 3 : SIMULATEUR INTERACTIF D'IFT & LEVIERS AGRONOMIQUES         -->
+    <!-- ===================================================================== -->
+    <section id="tab-simulateur" class="tab-content hidden space-y-6">
+      <!-- Mot de passe à donner aux élèves (visible en mode Enseignant uniquement) -->
+      <div class="teacher-only hidden no-print bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm">
+        <div class="flex items-start gap-3">
+          <i data-lucide="key-round" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+          <div>
+            <h4 class="font-bold text-amber-900 text-sm">Mot de passe pour débloquer l'étape 3 (Ma Trace Écrite) côté élèves :</h4>
+            <p class="text-sm text-amber-800 mt-1">
+              <span class="font-mono font-bold text-base bg-white border border-amber-300 px-2.5 py-0.5 rounded-lg tracking-wider">TREFLE</span>
+              — le simulateur fait partie de l'étape 2 côté élèves : à donner quand il est terminé (majuscules et accents indifférents).
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full">Atelier Pratique Interactif</span>
+            <h2 class="text-2xl font-display font-bold text-slate-900 mt-1">Simulateur d'IFT sur Blé Tendre d'Hiver (Bretagne)</h2>
+            <p class="text-sm text-slate-600 mt-0.5">
+              Testez l'effet combiné des leviers vus dans les documents sur l'exploitation de Loïc par rapport à la référence régionale (IFT réf = <strong>3,80</strong>).
+            </p>
+          </div>
+          <button onclick="resetSimulator()" class="text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            Réinitialiser l'itinéraire témoin
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <!-- Contrôles des leviers agronomiques (7 colonnes) -->
+          <div class="lg:col-span-7 space-y-4">
+            <!-- Levier 1 : Génétique -->
+            <label class="flex items-start gap-3.5 p-4 rounded-xl border border-slate-200 hover:border-emerald-400 bg-slate-50/70 cursor-pointer transition">
+              <input type="checkbox" id="sim-genetique" onchange="updateSimulator()" class="mt-1 w-5 h-5 accent-emerald-600 rounded" />
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 text-sm">1. Choix d'une variété rustique résistante (Septoriose / Rouilles)</span>
+                  <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">-0,65 IFT Fongicide</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1">
+                  Application directe du Doc 2 (Arvalis / Terre-net) : suppression du 1er traitement fongicide systématique grâce à la résistance variétale.
+                </p>
+              </div>
+            </label>
+
+            <!-- Levier 2 : OAD & Parcelle d'observation -->
+            <label class="flex items-start gap-3.5 p-4 rounded-xl border border-slate-200 hover:border-emerald-400 bg-slate-50/70 cursor-pointer transition">
+              <input type="checkbox" id="sim-oad" onchange="updateSimulator()" class="mt-1 w-5 h-5 accent-emerald-600 rounded" />
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 text-sm">2. Pilotage par OAD, BSV et parcelle d'observation témoin</span>
+                  <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">-0,55 IFT Fongicide/Régul.</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1">
+                  Méthode de Samuel Honoré (Doc 2) : ajustement des doses et suppression du régulateur de croissance et du 3e fongicide selon le risque climatique réel.
+                </p>
+              </div>
+            </label>
+
+            <!-- Levier 3 : Désherbage mécanique & Faux-semis -->
+            <label class="flex items-start gap-3.5 p-4 rounded-xl border border-slate-200 hover:border-emerald-400 bg-slate-50/70 cursor-pointer transition">
+              <input type="checkbox" id="sim-meca" onchange="updateSimulator()" class="mt-1 w-5 h-5 accent-emerald-600 rounded" />
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 text-sm">3. Allongement de rotation, faux-semis & herse étrille</span>
+                  <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">-0,70 IFT Herbicide</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1">
+                  Prophylaxie agronomique (Doc 3) : décalage de la date de semis et passage mécanique en sortie d'hiver pour réduire l'IFT herbicide.
+                </p>
+              </div>
+            </label>
+
+            <!-- Levier 4 : Biodiversité fonctionnelle & Bocage -->
+            <label class="flex items-start gap-3.5 p-4 rounded-xl border border-slate-200 hover:border-emerald-400 bg-slate-50/70 cursor-pointer transition">
+              <input type="checkbox" id="sim-biodiv" onchange="updateSimulator()" class="mt-1 w-5 h-5 accent-emerald-600 rounded" />
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 text-sm">4. Bandes enherbées, haies Breizh Bocage & auxiliaires</span>
+                  <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">-0,40 IFT Insecticide</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1">
+                  Biodiversité fonctionnelle (Doc 3) : régulation naturelle des pucerons d'automne par les syrphes et coccinelles hébergés dans les haies et DVP.
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <!-- Tableau de bord des résultats en temps réel (5 colonnes) -->
+          <div class="lg:col-span-5 bg-slate-900 text-white rounded-2xl p-6 space-y-5 shadow-lg">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Bilan de la parcelle simulée</span>
+              <span id="sim-badge-objectif" class="text-xs font-bold px-2.5 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
+                Itinéraire conventionnel
+              </span>
+            </div>
+
+            <!-- Jauges IFT -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center">
+                <span class="text-xs text-slate-400 block">IFT Total Parcelle</span>
+                <span id="sim-ift-total" class="text-3xl font-display font-extrabold text-amber-400 mt-1 block">3,80</span>
+                <span class="text-[11px] text-slate-400">Réf. territoriale : 3,80</span>
+              </div>
+              <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center">
+                <span class="text-xs text-slate-400 block">Évolution vs Réf.</span>
+                <span id="sim-reduction-pct" class="text-3xl font-display font-extrabold text-emerald-400 mt-1 block">0 %</span>
+                <span class="text-[11px] text-slate-400">Cible Écophyto 2+ : -50 %</span>
+              </div>
+            </div>
+
+            <!-- Détail par catégorie -->
+            <div class="space-y-2.5 text-xs">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-300">IFT Herbicides</span>
+                  <span id="sim-val-herb" class="font-mono font-bold text-white">1,50</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="sim-bar-herb" class="bg-blue-500 h-full transition-all duration-300" style="width: 100%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-slate-300">IFT Hors Herbicides (Fongicides, Insecticides, Régul.)</span>
+                  <span id="sim-val-hors" class="font-mono font-bold text-white">2,30</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="sim-bar-hors" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Éligibilité aux dispositifs publics -->
+            <div class="bg-slate-800/60 border border-slate-700 p-4 rounded-xl space-y-2">
+              <span class="text-xs font-bold text-amber-300 block">Éligibilité aux dispositifs publics (Doc 1) :</span>
+              <div id="sim-eligibilite" class="text-xs text-slate-300 space-y-1">
+                <p>• <strong>MAEC réduction phytos :</strong> Non éligible (IFT trop élevé, réduction &lt; 20 %).</p>
+                <p>• <strong>Certification HVE (Niveau 3) :</strong> Indicateur phytosanitaire défavorable.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 4 : SYNTHÈSE & TRACE ÉCRITE STRUCTURÉE (15 MIN)                -->
+    <!-- ===================================================================== -->
+    <section id="tab-synthese" class="tab-content hidden space-y-6">
+      <!-- Mot de passe à donner aux élèves (visible en mode Enseignant uniquement) -->
+      <div class="teacher-only hidden no-print bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm">
+        <div class="flex items-start gap-3">
+          <i data-lucide="key-round" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+          <div>
+            <h4 class="font-bold text-amber-900 text-sm">Mot de passe pour débloquer l'étape 4 (Bilan Flash) côté élèves :</h4>
+            <p class="text-sm text-amber-800 mt-1">
+              <span class="font-mono font-bold text-base bg-white border border-amber-300 px-2.5 py-0.5 rounded-lg tracking-wider">CARABE</span>
+              — à donner quand la trace écrite est complétée (majuscules et accents indifférents).
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm no-print">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Étape 3 • Institutionnalisation (15 min)</span>
+          <h2 class="text-xl font-display font-bold text-slate-900">Trace écrite structurée du cours</h2>
+        </div>
+        <button onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+          Imprimer / Exporter en PDF
+        </button>
+      </div>
+
+      <!-- Zone imprimable de la trace écrite -->
+      <div id="printable-synthese" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="border-b-2 border-emerald-800 pb-4 flex flex-wrap justify-between items-end gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-emerald-700">Terminale Bac Pro CGEA • Module MP4 Agro-écologie</span>
+            <h2 class="text-2xl font-display font-extrabold text-slate-900 mt-1">Synthèse : Le Plan Écophyto et la maîtrise de la pression phytosanitaire</h2>
+          </div>
+          <span class="text-xs font-semibold text-slate-500">Fiche de révision Baccalauréat</span>
+        </div>
+
+        <!-- I. Le cadre politique et réglementaire -->
+        <div class="space-y-2">
+          <h3 class="text-lg font-display font-bold text-emerald-900 flex items-center gap-2">
+            <span class="bg-emerald-800 text-white w-6 h-6 rounded-md text-xs flex items-center justify-center">I</span>
+            Les objectifs du Plan Écophyto et l'encadrement réglementaire
+          </h3>
+          <p class="text-sm text-slate-700 leading-relaxed">
+            Lancé en <strong>2008</strong> suite au Grenelle de l'Environnement, le <strong>Plan Écophyto</strong> (renforcé par <em>Écophyto 2+</em>) vise à réduire de <strong>50 %</strong> l'utilisation, les risques et les impacts des produits phytosanitaires d'ici 2025, tout en maintenant la performance économique des exploitations (« produire mieux »).
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 text-xs">
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <strong class="text-slate-900 block mb-1">Sécurisation des pratiques et des utilisateurs :</strong>
+              <ul class="list-disc pl-4 space-y-1 text-slate-700">
+                <li><strong>Certiphyto :</strong> certificat individuel obligatoire pour acheter, conseiller ou appliquer des produits phytopharmaceutiques.</li>
+                <li><strong>Contrôle des pulvérisateurs :</strong> obligatoire tous les 3 à 5 ans pour éviter la dérive et les pollutions ponctuelles.</li>
+                <li><strong>Séparation vente / conseil :</strong> mise en place du <em>conseil stratégique</em> (tous les 3 ans) et des <em>CEPP</em> pour les distributeurs.</li>
+              </ul>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <strong class="text-slate-900 block mb-1">Protection de l'eau et des riverains :</strong>
+              <ul class="list-disc pl-4 space-y-1 text-slate-700">
+                <li><strong>Bandes enherbées/boisées (5 m min)</strong> le long des cours d'eau BCAE et interdiction de désherber les fossés.</li>
+                <li><strong>ZNT (Zones de Non-Traitement)</strong> et <strong>DVP (Dispositifs Végétalisés Permanents)</strong> pour limiter le ruissellement.</li>
+                <li><strong>Zones riverains :</strong> distances de sécurité adaptables par chartes départementales avec buses anti-dérive.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- II. L'IFT -->
+        <div class="space-y-2">
+          <h3 class="text-lg font-display font-bold text-emerald-900 flex items-center gap-2">
+            <span class="bg-emerald-800 text-white w-6 h-6 rounded-md text-xs flex items-center justify-center">II</span>
+            L'IFT : un indicateur clé de pilotage agro-écologique
+          </h3>
+          <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded-r-xl text-sm text-emerald-950">
+            <strong>Définition :</strong> L'<strong>Indicateur de Fréquence de Traitements (IFT)</strong> comptabilise le nombre de doses de référence appliquées par hectare au cours d'une campagne culturale. Il se décline par catégorie (<em>herbicides, fongicides, insecticides, autres</em>).
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed">
+            L'IFT permet à l'agriculteur de <strong>mesurer ses progrès</strong> dans le temps, de se comparer aux références de son territoire et de contractualiser des aides publiques (MAEC, certification HVE niveau 3).
+          </p>
+        </div>
+
+        <!-- III. Pyramide des leviers & Accompagnement -->
+        <div class="space-y-3">
+          <h3 class="text-lg font-display font-bold text-emerald-900 flex items-center gap-2">
+            <span class="bg-emerald-800 text-white w-6 h-6 rounded-md text-xs flex items-center justify-center">III</span>
+            Combiner les leviers agronomiques et les dispositifs collectifs
+          </h3>
+
+          <!-- Schéma visuel de la stratégie de protection intégrée -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center text-xs">
+            <div class="bg-emerald-900 text-white p-3.5 rounded-xl shadow-sm">
+              <span class="font-bold text-amber-300 block uppercase mb-1">1. Prévention</span>
+              <p>Rotations longues, faux-semis, choix de <strong>variétés résistantes</strong> (gain de 0,6 à 0,7 IFT) et rusticité.</p>
+            </div>
+            <div class="bg-emerald-700 text-white p-3.5 rounded-xl shadow-sm">
+              <span class="font-bold text-amber-200 block uppercase mb-1">2. Observation</span>
+              <p>Suivi des <strong>BSV</strong>, parcelles d'observation témoins, OAD et seuils d'intervention.</p>
+            </div>
+            <div class="bg-teal-700 text-white p-3.5 rounded-xl shadow-sm">
+              <span class="font-bold text-amber-200 block uppercase mb-1">3. Alternatives</span>
+              <p>Désherbage mécanique (herse étrille), biocontrôle, haies (<em>Breizh Bocage</em>) et biodiversité fonctionnelle.</p>
+            </div>
+            <div class="bg-slate-700 text-white p-3.5 rounded-xl shadow-sm">
+              <span class="font-bold text-amber-300 block uppercase mb-1">4. Chimie ciblée</span>
+              <p>En dernier recours, à dose ajustée et avec buses anti-dérive dans le respect des ZNT.</p>
+            </div>
+          </div>
+
+          <p class="text-sm text-slate-700 leading-relaxed pt-1">
+            <strong>L'appui du collectif et des politiques publiques :</strong> La transition est accélérée par les réseaux d'échanges (<strong>fermes DEPHY</strong>, <strong>Groupes 30 000</strong>, <strong>GIEE</strong>) et les incitations économiques (<strong>MAEC</strong>, aides à la conversion/maintien en Agriculture Biologique <strong>CAB/MAB</strong>, valorisation par le label <strong>HVE</strong>).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- ONGLET 5 : BILAN & ÉVALUATION FORMATIVE FLASH (5 MIN)                 -->
+    <!-- ===================================================================== -->
+    <section id="tab-quiz" class="tab-content hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">Étape 4 • Évaluation Formative (5 min)</span>
+            <h2 class="text-2xl font-display font-bold text-slate-900 mt-1">Quiz Flash type Bac Pro CGEA</h2>
+          </div>
+          <div id="quiz-score-box" class="hidden bg-emerald-950 text-white px-4 py-2 rounded-xl font-display font-bold text-sm">
+            Score : <span id="quiz-score" class="text-amber-400 text-lg">0</span> / 6
+          </div>
+        </div>
+
+        <div id="quiz-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Les questions sont injectées dynamiquement par JS -->
+        </div>
+
+        <div class="mt-6 pt-5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+          <button onclick="submitQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl transition shadow-sm flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            Valider mes réponses et voir la correction
+          </button>
+          <button onclick="resetQuiz()" class="text-sm font-semibold text-slate-500 hover:text-slate-800">
+            Recommencer le quiz
+          </button>
+        </div>
+
+        <!-- Question ouverte de synthèse orale / écrite finale -->
+        <div class="mt-6 bg-slate-50 border border-slate-200 rounded-xl p-5">
+          <h3 class="font-display font-bold text-slate-900 text-sm flex items-center gap-2">
+            <i data-lucide="award" class="w-4 h-4 text-amber-600"></i>
+            Question de réflexion professionnelle (Préparation à l'oral E7) :
+          </h3>
+          <p class="text-xs text-slate-700 mt-1">
+            « Quel est l'intérêt pour un chef d'exploitation d'utiliser son IFT lors de la réalisation de son <strong>Conseil Stratégique Phytosanitaire (CSP)</strong> tous les 3 ans ? »
+          </p>
+          <div class="teacher-only hidden mt-3 p-3 bg-emerald-900 text-emerald-50 rounded-lg text-xs">
+            <strong class="text-amber-300">Éléments de réponse attendus :</strong> L'IFT permet de poser un diagnostic objectif chiffré par culture et par famille de produits, d'identifier les postes les plus consommateurs (ex. herbicides sur maïs ou fongicides sur blé), de se situer par rapport aux groupes locaux (DEPHY/30 000) et de bâtir un plan d'action pluriannuel combinant leviers agronomiques (variétés, rotations) et aides financières (MAEC, HVE).
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIED DE PAGE -->
+  <footer class="bg-white border-t border-slate-200 py-4 px-4 text-center text-xs text-slate-500 no-print">
+    Support pédagogique interactif • Terminale Bac Pro CGEA (MP4 Agro-écologie) • Sources : Fiche Écophyto Lycée Pommerit, Terre-net Média, Observatoire de l'Environnement en Bretagne (OEB).
+  </footer>
+
+  <!-- JAVASCRIPT DE L'APPLICATION -->
+  <script>
+    // Initialisation des icônes Lucide
+    lucide.createIcons();
+
+    // =========================================================================
+    // 1. GESTION DU CHRONOMÈTRE DE SÉANCE (50 MINUTES)
+    // =========================================================================
+    let totalSeconds = 50 * 60;
+    let timerInterval = null;
+    let isRunning = false;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      const display = document.getElementById('timer-display');
+      display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      if (totalSeconds <= 300) {
+        display.classList.add('text-amber-400');
+      } else {
+        display.classList.remove('text-amber-400');
+      }
+    }
+
+    function toggleTimer() {
+      const icon = document.getElementById('timer-icon');
+      if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        icon.setAttribute('data-lucide', 'play');
+      } else {
+        isRunning = true;
+        icon.setAttribute('data-lucide', 'pause');
+        timerInterval = setInterval(() => {
+          if (totalSeconds > 0) {
+            totalSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isRunning = false;
+            icon.setAttribute('data-lucide', 'play');
+          }
+        }, 1000);
+      }
+      lucide.createIcons();
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      totalSeconds = 50 * 60;
+      updateTimerDisplay();
+      const icon = document.getElementById('timer-icon');
+      icon.setAttribute('data-lucide', 'play');
+      lucide.createIcons();
+    }
+
+    // =========================================================================
+    // 2. BASCULE MODE ÉLÈVE / MODE ENSEIGNANT (CORRIGÉS)
+    // =========================================================================
+    let isTeacherMode = false;
+
+    function setTeacherMode(enabled) {
+      isTeacherMode = enabled;
+      const btnEleve = document.getElementById('btn-mode-eleve');
+      const btnProf = document.getElementById('btn-mode-prof');
+      const teacherBlocks = document.querySelectorAll('.teacher-only');
+
+      if (enabled) {
+        btnProf.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-amber-500 text-slate-950 shadow';
+        btnEleve.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white';
+        teacherBlocks.forEach(el => el.classList.remove('hidden'));
+      } else {
+        btnEleve.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow';
+        btnProf.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white';
+        teacherBlocks.forEach(el => el.classList.add('hidden'));
+      }
+    }
+
+    function toggleAllCorrections() {
+      setTeacherMode(!isTeacherMode);
+    }
+
+    // =========================================================================
+    // 3. NAVIGATION ENTRE LES ONGLETS DU COURS
+    // =========================================================================
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-emerald-950', 'shadow-sm');
+        btn.classList.add('text-emerald-100', 'hover:bg-emerald-800/70');
+      });
+
+      const activeBtn = document.getElementById('nav-' + tabId);
+      activeBtn.classList.remove('text-emerald-100', 'hover:bg-emerald-800/70');
+      activeBtn.classList.add('bg-white', 'text-emerald-950', 'shadow-sm');
+    }
+
+    // Sélecteur de document dans l'onglet 2
+    function selectDoc(docNum) {
+      document.querySelectorAll('.doc-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('doc-content-' + docNum).classList.remove('hidden');
+
+      document.querySelectorAll('.doc-selector').forEach(btn => {
+        btn.classList.remove('border-emerald-600', 'text-emerald-800', 'bg-white', 'font-bold');
+        btn.classList.add('border-transparent', 'text-slate-600', 'font-semibold');
+      });
+
+      const activeDocBtn = document.getElementById('doc-tab-' + docNum);
+      activeDocBtn.classList.remove('border-transparent', 'text-slate-600', 'font-semibold');
+      activeDocBtn.classList.add('border-emerald-600', 'text-emerald-800', 'bg-white', 'font-bold');
+    }
+
+    // =========================================================================
+    // 4. GRAPHIQUE INTERACTIF OEB (DOCUMENT 3)
+    // =========================================================================
+    function initOEBChart() {
+      const ctx = document.getElementById('oebChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [
+            'DEPHY - Herbicides',
+            'DEPHY - Hors herbicides',
+            'Groupes 30 000 - Herbicides',
+            'Groupes 30 000 - Hors herbicides'
+          ],
+          datasets: [
+            {
+              label: 'Référence 2009-2011',
+              data: [1.02, 0.92, null, null],
+              backgroundColor: '#0f766e',
+              borderRadius: 4
+            },
+            {
+              label: 'Période 2014-2016',
+              data: [1.06, 0.45, 0.85, 0.89],
+              backgroundColor: '#34d399',
+              borderRadius: 4
+            },
+            {
+              label: 'Année 2017',
+              data: [0.94, 0.45, 0.66, 0.55],
+              backgroundColor: '#a7f3d0',
+              borderColor: '#059669',
+              borderWidth: 1,
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.dataset.label} : ${ctx.parsed.y !== null ? ctx.parsed.y + ' IFT' : 'Non créé'}`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 1.2,
+              title: { display: true, text: 'IFT moyen (GCPE Bretagne)', font: { size: 10 } }
+            },
+            x: {
+              ticks: { font: { size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // 5. SIMULATEUR INTERACTIF D'IFT (ONGLET 3)
+    // =========================================================================
+    function updateSimulator() {
+      const baseHerb = 1.50;
+      const baseHors = 2.30;
+      const baseTotal = 3.80;
+
+      let herb = baseHerb;
+      let hors = baseHors;
+
+      if (document.getElementById('sim-genetique').checked) hors -= 0.65;
+      if (document.getElementById('sim-oad').checked) hors -= 0.55;
+      if (document.getElementById('sim-meca').checked) herb -= 0.70;
+      if (document.getElementById('sim-biodiv').checked) hors -= 0.40;
+
+      herb = Math.max(0, Number(herb.toFixed(2)));
+      hors = Math.max(0, Number(hors.toFixed(2)));
+      const total = Number((herb + hors).toFixed(2));
+      const reductionPct = Math.round(((baseTotal - total) / baseTotal) * 100);
+
+      document.getElementById('sim-ift-total').textContent = total.toFixed(2).replace('.', ',');
+      document.getElementById('sim-reduction-pct').textContent = reductionPct > 0 ? `-${reductionPct} %` : '0 %';
+      document.getElementById('sim-val-herb').textContent = herb.toFixed(2).replace('.', ',');
+      document.getElementById('sim-val-hors').textContent = hors.toFixed(2).replace('.', ',');
+
+      document.getElementById('sim-bar-herb').style.width = `${(herb / baseHerb) * 100}%`;
+      document.getElementById('sim-bar-hors').style.width = `${(hors / baseHors) * 100}%`;
+
+      const badge = document.getElementById('sim-badge-objectif');
+      const eligibilite = document.getElementById('sim-eligibilite');
+
+      if (reductionPct >= 50) {
+        badge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        badge.textContent = 'Objectif Écophyto 2+ (-50 %) atteint !';
+        eligibilite.innerHTML = `
+          <p class="text-emerald-300">✓ <strong>MAEC réduction phytos :</strong> Éligible au niveau maximal d'aide à l'hectare.</p>
+          <p class="text-emerald-300">✓ <strong>Certification HVE (Niveau 3) :</strong> Indicateur phytosanitaire largement validé.</p>
+        `;
+      } else if (reductionPct >= 25) {
+        badge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40';
+        badge.textContent = 'Palier intermédiaire (-25 %) atteint';
+        eligibilite.innerHTML = `
+          <p class="text-emerald-300">✓ <strong>MAEC réduction phytos :</strong> Éligible au 1er niveau d'engagement (5 ans).</p>
+          <p class="text-amber-300">• <strong>Certification HVE (Niveau 3) :</strong> En bonne voie (compléter avec biodiversité/engrais).</p>
+        `;
+      } else {
+        badge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30';
+        badge.textContent = 'Itinéraire conventionnel';
+        eligibilite.innerHTML = `
+          <p>• <strong>MAEC réduction phytos :</strong> Non éligible (IFT trop élevé, réduction &lt; 25 %).</p>
+          <p>• <strong>Certification HVE (Niveau 3) :</strong> Indicateur phytosanitaire défavorable.</p>
+        `;
+      }
+    }
+
+    function resetSimulator() {
+      ['sim-genetique', 'sim-oad', 'sim-meca', 'sim-biodiv'].forEach(id => {
+        document.getElementById(id).checked = false;
+      });
+      updateSimulator();
+    }
+
+    // =========================================================================
+    // 6. QUIZ FORMATIF FLASH (ONGLET 5)
+    // =========================================================================
+    const quizQuestions = [
+      {
+        q: "1. Que mesure précisément l'Indicateur de Fréquence de Traitements (IFT) ?",
+        options: [
+          "Le coût financier en euros des pesticides achetés par hectare",
+          "Le nombre de doses de référence appliquées par hectare sur une campagne",
+          "Le nombre de passages de pulvérisateur dans l'année"
+        ],
+        correct: 1,
+        explication: "L'IFT comptabilise le nombre de doses de référence utilisées par hectare au cours d'une campagne culturale."
+      },
+      {
+        q: "2. Quelle est la largeur minimale obligatoire d'une bande enherbée ou boisée le long d'un cours d'eau BCAE ?",
+        options: [
+          "1 mètre",
+          "3 mètres",
+          "5 mètres"
+        ],
+        correct: 2,
+        explication: "La Directive Nitrates (BCAE) et l'arrêté ZNT imposent au minimum 5 mètres sans fertilisation ni traitement."
+      },
+      {
+        q: "3. Quel gain moyen d'IFT permet l'utilisation d'une variété résistante aux maladies par rapport à une variété sensible ?",
+        options: [
+          "0,1 à 0,2 point d'IFT",
+          "0,6 à 0,7 point d'IFT",
+          "2,5 points d'IFT"
+        ],
+        correct: 1,
+        explication: "Selon Arvalis-Institut du végétal (Doc 2), le gain atteint 0,6 à 0,7 point d'IFT sur céréales."
+      },
+      {
+        q: "4. Quel est l'objectif final de réduction des produits phytosanitaires fixé par le plan Écophyto 2+ à l'horizon 2025 ?",
+        options: [
+          "- 15 %",
+          "- 30 %",
+          "- 50 %"
+        ],
+        correct: 2,
+        explication: "Écophyto 2+ fixe un palier à -25 % en 2020 et -50 % d'ici 2025 par la reconception des systèmes."
+      },
+      {
+        q: "5. Que signifie le sigle HVE dans les démarches de certification environnementale des exploitations ?",
+        options: [
+          "Haute Valeur Environnementale (niveau 3 le plus exigeant)",
+          "Hydraulique et Végétalisation des Exploitations",
+          "Homologation des Variétés Économes"
+        ],
+        correct: 0,
+        explication: "La HVE (niveau 3) évalue la biodiversité, la stratégie phytosanitaire (IFT), la fertilisation et l'eau."
+      },
+      {
+        q: "6. Quelle réforme réglementaire oblige désormais à distinguer l'organisme qui prescrit le conseil de celui qui vend les produits ?",
+        options: [
+          "Les arrêtés « fossés »",
+          "La séparation de la vente et du conseil phytosanitaire",
+          "Le programme Breizh Bocage"
+        ],
+        correct: 1,
+        explication: "La séparation vente/conseil garantit l'indépendance des préconisations (conseil stratégique tous les 3 ans)."
+      }
+    ];
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = quizQuestions.map((item, idx) => `
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2.5" id="q-card-${idx}">
+          <p class="font-bold text-slate-900 text-xs sm:text-sm">${item.q}</p>
+          <div class="space-y-1.5">
+            ${item.options.map((opt, oIdx) => `
+              <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-slate-200 hover:border-emerald-400 cursor-pointer text-xs text-slate-700">
+                <input type="radio" name="quiz-q-${idx}" value="${oIdx}" class="accent-emerald-600" />
+                <span>${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+          <div id="q-feedback-${idx}" class="hidden text-xs p-2.5 rounded-lg mt-2"></div>
+        </div>
+      `).join('');
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      quizQuestions.forEach((item, idx) => {
+        const selected = document.querySelector(`input[name="quiz-q-${idx}"]:checked`);
+        const feedback = document.getElementById(`q-feedback-${idx}`);
+        feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-red-100', 'text-red-900');
+
+        if (selected && Number(selected.value) === item.correct) {
+          score++;
+          feedback.classList.add('bg-emerald-100', 'text-emerald-900');
+          feedback.innerHTML = `<strong>Bonne réponse !</strong> ${item.explication}`;
+        } else {
+          feedback.classList.add('bg-red-100', 'text-red-900');
+          feedback.innerHTML = `<strong>À revoir :</strong> ${item.explication}`;
+        }
+      });
+
+      document.getElementById('quiz-score').textContent = score;
+      document.getElementById('quiz-score-box').classList.remove('hidden');
+    }
+
+    function resetQuiz() {
+      renderQuiz();
+      document.getElementById('quiz-score-box').classList.add('hidden');
+    }
+
+    // Lancement au chargement de la page
+    window.onload = function() {
+      initOEBChart();
+      renderQuiz();
+      updateSimulator();
+    };
+  </script>
+</body>
+</html>
