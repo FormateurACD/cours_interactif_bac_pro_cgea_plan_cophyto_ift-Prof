@@ -23,7 +23,58 @@
     }
     /* Styles spécifiques pour l'impression de la trace écrite */
     @media print {
-      body * {
+      /* Impression du document complet avec les réponses enseignant */
+      body.print-corrige,
+      body.print-corrige * {
+        visibility: visible !important;
+      }
+      body.print-corrige {
+        display: block !important;
+        background: white !important;
+        color: #111827 !important;
+      }
+      body.print-corrige header,
+      body.print-corrige nav,
+      body.print-corrige footer,
+      body.print-corrige .no-print {
+        display: none !important;
+      }
+      body.print-corrige main {
+        display: block !important;
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      body.print-corrige .tab-content {
+        display: block !important;
+        visibility: visible !important;
+        margin: 0 0 18px 0 !important;
+        break-inside: auto;
+      }
+      body.print-corrige .teacher-only {
+        display: block !important;
+        visibility: visible !important;
+      }
+      body.print-corrige .correction-box {
+        display: block !important;
+        color: #064e3b !important;
+        background: #ecfdf5 !important;
+        border: 1px solid #10b981 !important;
+        break-inside: avoid;
+      }
+      body.print-corrige .tab-content > * {
+        break-inside: avoid;
+      }
+      body.print-corrige textarea,
+      body.print-corrige input,
+      body.print-corrige button {
+        display: none !important;
+      }
+      body.print-corrige .hidden {
+        display: block !important;
+      }
+
+      body:not(.print-corrige) * {
         visibility: hidden;
       }
       #printable-synthese, #printable-synthese * {
@@ -108,6 +159,10 @@
           <button onclick="setTeacherMode(true)" id="btn-mode-prof" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white">
             <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
             Enseignant (Corrigés)
+          </button>
+          <button onclick="printCorrectedDocument()" class="teacher-only hidden no-print bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-3 py-2 rounded-lg transition items-center gap-2">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            Imprimer le corrigé
           </button>
         </div>
       </div>
@@ -965,6 +1020,18 @@
 
     function toggleAllCorrections() {
       setTeacherMode(!isTeacherMode);
+    }
+
+    // Imprime l'ensemble du cours en affichant les corrigés enseignant.
+    function printCorrectedDocument() {
+      setTeacherMode(true);
+      document.body.classList.add('print-corrige');
+      const cleanPrintMode = () => {
+        document.body.classList.remove('print-corrige');
+        window.removeEventListener('afterprint', cleanPrintMode);
+      };
+      window.addEventListener('afterprint', cleanPrintMode);
+      window.print();
     }
 
     // =========================================================================
