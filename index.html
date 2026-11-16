@@ -23,72 +23,78 @@
     }
     /* Styles spécifiques pour l'impression de la trace écrite */
     @media print {
-      /* Impression du document complet avec les réponses enseignant */
-      body.print-corrige,
-      body.print-corrige * {
-        visibility: visible !important;
-      }
+      /* Mode impression intégrale : toutes les étapes et tous les corrigés */
       body.print-corrige {
         display: block !important;
-        background: white !important;
+        background: #fff !important;
         color: #111827 !important;
+      }
+      body.print-corrige *,
+      body.print-corrige *::before,
+      body.print-corrige *::after {
+        visibility: visible !important;
       }
       body.print-corrige header,
       body.print-corrige nav,
       body.print-corrige footer,
-      body.print-corrige .no-print {
+      body.print-corrige .no-print,
+      body.print-corrige button {
         display: none !important;
       }
       body.print-corrige main {
         display: block !important;
+        width: 100% !important;
         max-width: none !important;
-        padding: 0 !important;
         margin: 0 !important;
+        padding: 0 !important;
+      }
+      body.print-corrige main > .tab-content,
+      body.print-corrige .tab-content,
+      body.print-corrige .tab-content.hidden,
+      body.print-corrige .hidden {
+        display: block !important;
+        visibility: visible !important;
+      }
+      body.print-corrige .teacher-only,
+      body.print-corrige .correction-box,
+      body.print-corrige .doc-panel {
+        display: block !important;
+        visibility: visible !important;
+      }
+      body.print-corrige #printable-synthese {
+        position: static !important;
+        inset: auto !important;
+        width: 100% !important;
+        padding: 12px !important;
+        box-shadow: none !important;
+      }
+      body.print-corrige textarea,
+      body.print-corrige input,
+      body.print-corrige select {
+        display: none !important;
       }
       body.print-corrige .tab-content {
-        display: block !important;
-        visibility: visible !important;
-        margin: 0 0 18px 0 !important;
-        break-inside: auto;
-      }
-      body.print-corrige .teacher-only {
-        display: block !important;
-        visibility: visible !important;
+        margin: 0 0 20px 0 !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
       }
       body.print-corrige .correction-box {
-        display: block !important;
         color: #064e3b !important;
         background: #ecfdf5 !important;
         border: 1px solid #10b981 !important;
         break-inside: avoid;
       }
-      body.print-corrige .tab-content > * {
-        break-inside: avoid;
+      body.print-corrige canvas {
+        max-width: 100% !important;
       }
-      body.print-corrige textarea,
-      body.print-corrige input,
-      body.print-corrige button {
-        display: none !important;
-      }
-      body.print-corrige .hidden {
-        display: block !important;
-      }
-      body.print-corrige #printable-synthese {
-        position: static !important;
-        left: auto !important;
-        top: auto !important;
-        width: auto !important;
-        padding: 20px !important;
-        box-shadow: none !important;
-      }
-
       body:not(.print-corrige) * {
         visibility: hidden;
       }
-      #printable-synthese, #printable-synthese * {
+      body:not(.print-corrige) #printable-synthese,
+      body:not(.print-corrige) #printable-synthese * {
         visibility: visible;
       }
-      #printable-synthese {
+      body:not(.print-corrige) #printable-synthese {
         position: absolute;
         left: 0;
         top: 0;
@@ -97,7 +103,7 @@
         padding: 20px !important;
         box-shadow: none !important;
       }
-      .no-print {
+      body:not(.print-corrige) .no-print {
         display: none !important;
       }
     }
